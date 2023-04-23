@@ -6,7 +6,7 @@
           slot="cover"
           alt="example"
           src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-          style="width: 45px; height: 45px"
+          style="width: 60px; height: 60px"
         >
         <span>歌单</span>
       </div>
@@ -15,8 +15,11 @@
       <div class="content-header">
         <a-breadcrumb style="margin: 16px 0">
           <a-breadcrumb-item>Home</a-breadcrumb-item>
-          <a-breadcrumb-item>List</a-breadcrumb-item>
-          <a-breadcrumb-item>App</a-breadcrumb-item>
+          <a-breadcrumb-item>
+            <nuxt-link to="/song">
+              歌单
+            </nuxt-link>
+          </a-breadcrumb-item>
         </a-breadcrumb>
         <div class="cotent-search">
           <div>
@@ -43,14 +46,15 @@
             </a-select>
           </div>
           <a-input-search
-            placeholder="input search text"
+            v-model="inputVal"
+            placeholder="请输入歌名"
             style="width: 200px"
             @search="onSearch"
           />
         </div>
       </div>
       <div class="layout-content">
-        <nuxt to="/song" />
+        <nuxt-child keep-alive :datalist="searchList" to="/song" />
       </div>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
@@ -60,14 +64,86 @@
 </template>
 
 <script>
+import csvToJson from 'csvtojson'
+
+const testDataList = []
+for (let i = 0; i < 100; i++) {
+  testDataList.push({
+    key: i.toString(),
+    songName: `歌名 ${i}`,
+    language: '中文',
+    artist: `歌手 ${i}`
+  })
+}
+
 export default {
   name: 'IndexPage',
   data () {
     return {
-      selectionDefaultValue: 'all'
+      selectionDefaultValue: 'all',
+      inputVal: '',
+      songListData: [],
+      dataList: []
     }
   },
+  computed: {
+    searchList: function () {
+      if (!this.inputVal) {
+        return this.dataList
+      }
+      return this.dataList.filter((v) => {
+        return v.songName.includes(this.inputVal)
+      })
+    }
+  },
+  created () {},
+  mounted () {
+    if (this.checkIfSupportLocalstorage()) {
+      this.handleData()
+    }
+  },
+  beforeMount () {},
   methods: {
+    checkIfSupportLocalstorage () {
+      try {
+        localStorage.setItem('test', 'test')
+        const test = localStorage.getItem('test')
+        if (test === 'test') {
+          return true
+        }
+      } catch (error) {
+        alert('您的浏览器可能不受支持，请更换浏览器后再试', error)
+      }
+    },
+    handleData () {
+      if (
+        localStorage.getItem('songList') === null ||
+        localStorage.getItem('lastUpdate') === null
+      ) {
+        this.getData()
+      } else if (this.checkIfExpired()) {
+        this.getData()
+      } else {
+        this.dataList = JSON.parse(localStorage.getItem('songList'))
+      }
+    },
+    checkIfExpired () {
+      const lastUpate = localStorage.getItem('lastUpdate')
+      const currentTime = Date.parse(new Date()) / 1000
+      if (currentTime - lastUpate > -1) {
+        return true
+      }
+      return false
+    },
+    async getData () {
+      const res = await this.$indexApi.getSongListData()
+      const json = await csvToJson().fromString(res)
+      this.songListData = json
+      const currentTime = Date.parse(new Date()) / 1000
+      localStorage.setItem('lastUpdate', currentTime)
+      localStorage.setItem('songList', JSON.stringify(json))
+      this.dataList = JSON.parse(localStorage.getItem('songList'))
+    },
     handleChange (value) {
       console.log(value)
     },
@@ -79,8 +155,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-html, body {
-  min-height: 100%;
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
 }
 
 .ant-layout {
@@ -96,6 +175,7 @@ html, body {
   align-items: center;
   background-color: rgb(250, 220, 246);
   box-shadow: 0 0 10px gainsboro;
+  padding: 0 10%;
 }
 
 .logo {
@@ -113,10 +193,15 @@ html, body {
   }
 }
 
-.layout-content {
+.ant-layout-content {
+  height: calc(100vh - 100px - 69px);
+  padding: 0 10% !important;
   background: #fff;
-  padding: 24px;
-  min-height: 100%;
+  overflow: auto;
+}
+
+.layout-content {
+  // padding: 24px;
 }
 
 .content-header {
@@ -129,21 +214,5 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-</style>
-
-<style lang="less" scoped>
-.ant-layout-header {
-  padding: 0 10%;
-}
-.ant-layout-content {
-  padding: 0 10% !important;
-}
-</style>
-
-<style>
-.layout {
-  min-height: 100% !important;
 }
 </style>
