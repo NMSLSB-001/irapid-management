@@ -54,7 +54,9 @@
         </div>
       </div>
       <div class="layout-content">
-        <nuxt-child keep-alive :datalist="searchList" to="/song" />
+        <a-config-provider :locale="locale">
+          <nuxt-child keep-alive :datalist="searchList" to="/song" />
+        </a-config-provider>
       </div>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
@@ -65,6 +67,7 @@
 
 <script>
 import csvToJson from 'csvtojson'
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 
 const testDataList = []
 for (let i = 0; i < 100; i++) {
@@ -80,6 +83,7 @@ export default {
   name: 'IndexPage',
   data () {
     return {
+      locale: zhCN,
       selectionDefaultValue: 'all',
       inputVal: '',
       songListData: [],

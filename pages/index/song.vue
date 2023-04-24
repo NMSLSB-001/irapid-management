@@ -36,7 +36,11 @@ export default {
       showLoadingMore: true,
       pagination: {
         onChange: page => this.onPageChange(page),
-        pageSize: 18,
+        pageSize: 10,
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '20', '30', '40', '50'],
+        showTotal: total => `共 ${total} 首歌曲`,
+        onShowSizeChange: (current, pageSize) => this.onSizeChange(current, pageSize),
         style: {
           textAlign: 'center !important',
           display: 'flex',
@@ -67,10 +71,18 @@ export default {
       ]
     }
   },
-  mounted () {},
+  mounted () {
+    const currentPageSize = localStorage.getItem('pageSize')
+    if (currentPageSize !== null) {
+      this.pagination.pageSize = currentPageSize
+    }
+  },
   methods: {
     onPageChange (current) {
       console.log(current)
+    },
+    onSizeChange (current, pageSize) {
+      localStorage.setItem('pageSize', pageSize)
     },
     rowClick (record, index) {
       return {
