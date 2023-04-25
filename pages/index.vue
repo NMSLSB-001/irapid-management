@@ -206,7 +206,7 @@ body,
   --transparent: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==);
   background-image: -webkit-cross-fade(
     var(--transparent),
-    url('../static/Dionysus.png'),
+    url('../static/images/Dionysus.png'),
     100%
   );
 }

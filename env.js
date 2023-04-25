@@ -7,6 +7,6 @@ module.exports = {
   // 生产环境
   pro: {
     NODE_ENV: 'production',
-    API_URL: 'https://*****.com/'
+    API_URL: 'https://cdn.jsdelivr.net/gh/adamaxiao/test@main'
   }
 }
