@@ -24,8 +24,8 @@
         <div class="cotent-search">
           <div>
             <a-select
+              class="cotent-search-select"
               :default-value="selectionDefaultValue"
-              style="width: 120px"
               @change="handleChange"
             >
               <a-select-option value="all">
@@ -47,8 +47,8 @@
           </div>
           <a-input-search
             v-model="inputVal"
+            class="cotent-search-search"
             placeholder="请输入歌名"
-            style="width: 200px"
             @search="onSearch"
           />
         </div>
@@ -100,7 +100,9 @@ export default {
       })
     }
   },
-  created () {},
+  created () {
+    this.$router.push('/song')
+  },
   mounted () {
     if (this.checkIfSupportLocalstorage()) {
       this.handleData()
@@ -168,7 +170,6 @@ body,
 
 .ant-layout {
   display: flex;
-  min-width: 375px;
   min-height: 100%;
 }
 
@@ -183,7 +184,7 @@ body,
 }
 
 .logo {
-  height: 100px;
+  max-height: 90px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -198,7 +199,7 @@ body,
 }
 
 .ant-layout-content {
-  height: calc(100vh - 100px - 69px);
+  height: calc(100vh - 80px - 69px);
   padding: 0 10% !important;
   background: #fff;
   overflow: auto;
@@ -218,5 +219,13 @@ body,
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.cotent-search-select {
+  min-width: 80px;
+}
+
+.cotent-search-search {
+  min-width: 150px;
 }
 </style>

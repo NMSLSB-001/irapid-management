@@ -16,15 +16,14 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    'ant-design-vue/dist/antd.css'
-  ],
+  css: ['ant-design-vue/dist/antd.css'],
+
+  router: {
+  },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
@@ -55,8 +54,7 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  },
+  build: {},
   env: {
     NODE_ENV: env[process.env.NODE_ENV].NODE_ENV,
     API_URL: env[process.env.NODE_ENV].API_URL

@@ -39,8 +39,9 @@ export default {
         pageSize: 10,
         showSizeChanger: true,
         pageSizeOptions: ['10', '20', '30', '40', '50'],
-        showTotal: total => `共 ${total} 首歌曲`,
-        onShowSizeChange: (current, pageSize) => this.onSizeChange(current, pageSize),
+        // showTotal: total => `共 ${total} 首歌曲`,
+        onShowSizeChange: (current, pageSize) =>
+          this.onSizeChange(current, pageSize),
         style: {
           textAlign: 'center !important',
           display: 'flex',
@@ -74,7 +75,7 @@ export default {
   mounted () {
     const currentPageSize = localStorage.getItem('pageSize')
     if (currentPageSize !== null) {
-      this.pagination.pageSize = currentPageSize
+      this.pagination.pageSize = parseInt(currentPageSize)
     }
   },
   methods: {
@@ -82,7 +83,7 @@ export default {
       console.log(current)
     },
     onSizeChange (current, pageSize) {
-      localStorage.setItem('pageSize', pageSize)
+      localStorage.setItem('pageSize', pageSize.toString())
     },
     rowClick (record, index) {
       return {
@@ -110,13 +111,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.ant-layout {
+  min-width: 320px;
+}
+
 .ant-layout-content {
   height: 75%;
   background-color: #fff;
   padding: 0 0 !important;
 }
 
-.a-list {
+.a-table {
   display: flex;
   justify-content: center;
   align-items: center;
