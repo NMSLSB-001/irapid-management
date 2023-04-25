@@ -49,6 +49,7 @@
               </div>
               <a-input-search
                 v-model="inputVal"
+                allow-clear
                 class="cotent-search-search"
                 placeholder="请输入歌名"
                 @search="onSearch"
