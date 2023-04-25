@@ -12,51 +12,55 @@
       </div>
     </a-layout-header>
     <a-layout-content>
-      <div class="content-header">
-        <a-breadcrumb style="margin: 16px 0">
-          <a-breadcrumb-item>Home</a-breadcrumb-item>
-          <a-breadcrumb-item>
-            <nuxt-link to="/song">
-              歌单
-            </nuxt-link>
-          </a-breadcrumb-item>
-        </a-breadcrumb>
-        <div class="cotent-search">
-          <div>
-            <a-select
-              class="cotent-search-select"
-              :default-value="selectionDefaultValue"
-              @change="handleChange"
-            >
-              <a-select-option value="all">
-                全部语言
-              </a-select-option>
-              <a-select-option value="zh">
-                中文
-              </a-select-option>
-              <a-select-option value="en">
-                英语
-              </a-select-option>
-              <a-select-option value="ko" disabled>
-                韩语
-              </a-select-option>
-              <a-select-option value="ja">
-                日语
-              </a-select-option>
-            </a-select>
+      <div class="main-content">
+      <div class="layout-content">
+        <div class="layout-content-header">
+          <a-breadcrumb style="margin: 16px 0">
+            <a-breadcrumb-item>Home</a-breadcrumb-item>
+            <a-breadcrumb-item>
+              <nuxt-link to="/song">
+                歌单
+              </nuxt-link>
+            </a-breadcrumb-item>
+          </a-breadcrumb>
+          <div class="cotent-search">
+            <div>
+              <a-select
+                class="cotent-search-select"
+                :default-value="selectionDefaultValue"
+                @change="handleChange"
+              >
+                <a-select-option value="all">
+                  全部语言
+                </a-select-option>
+                <a-select-option value="zh">
+                  中文
+                </a-select-option>
+                <a-select-option value="en">
+                  英语
+                </a-select-option>
+                <a-select-option value="ko" disabled>
+                  韩语
+                </a-select-option>
+                <a-select-option value="ja">
+                  日语
+                </a-select-option>
+              </a-select>
+            </div>
+            <a-input-search
+              v-model="inputVal"
+              class="cotent-search-search"
+              placeholder="请输入歌名"
+              @search="onSearch"
+            />
           </div>
-          <a-input-search
-            v-model="inputVal"
-            class="cotent-search-search"
-            placeholder="请输入歌名"
-            @search="onSearch"
-          />
+        </div>
+        <div class="layout-content-content">
+          <a-config-provider :locale="locale">
+            <nuxt-child keep-alive :datalist="searchList" to="/song" />
+          </a-config-provider>
         </div>
       </div>
-      <div class="layout-content">
-        <a-config-provider :locale="locale">
-          <nuxt-child keep-alive :datalist="searchList" to="/song" />
-        </a-config-provider>
       </div>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
@@ -199,17 +203,27 @@ body,
 }
 
 .ant-layout-content {
-  height: calc(100vh - 80px - 69px);
-  padding: 0 10% !important;
-  background: #fff;
-  overflow: auto;
+  --transparent: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==);
+  background-image: -webkit-cross-fade(var(--transparent),url('../static/Dionysus.png'),100%);
+}
+
+.main-content {
+  background-color: #fcfcfccc;
+  backdrop-filter: blur(1px);
 }
 
 .layout-content {
+  height: calc(100vh - 80px - 69px);
+  padding: 0 10% !important;
+  // background: #fff;
+  overflow: auto;
+}
+
+.layout-content-content {
   // padding: 24px;
 }
 
-.content-header {
+.layout-content-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
