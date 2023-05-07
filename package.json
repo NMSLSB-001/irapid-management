@@ -21,7 +21,7 @@
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10"
+    "vue-template-compiler": "^2.7.14"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",
@@ -29,6 +29,7 @@
     "@nuxtjs/eslint-module": "^3.1.0",
     "eslint": "^8.24.0",
     "eslint-plugin-nuxt": "^4.0.0",
-    "eslint-plugin-vue": "^9.5.1"
+    "eslint-plugin-vue": "^9.5.1",
+    "vue-svg-loader": "^0.16.0"
   }
 }

@@ -2,18 +2,20 @@
   <a-layout id="components-layout-demo-custom-trigger">
     <a-layout-sider v-model="collapsed" :trigger="null" collapsible>
       <div class="logo" />
-      <a-menu theme="dark" mode="inline" :default-selected-keys="['1']">
-        <a-menu-item key="1">
-          <a-icon type="user" />
-          <span>nav 1</span>
+      <a-menu
+        theme="dark"
+        mode="inline"
+        :default-selected-keys="['1']"
+        :selected-keys="selectedPath"
+        @click="handelMenuClick"
+      >
+        <a-menu-item key="/busroute">
+          <a-icon type="car" />
+          <span>Bus Routes</span>
         </a-menu-item>
-        <a-menu-item key="2">
+        <a-menu-item key="/beacon">
           <a-icon type="video-camera" />
-          <span>nav 2</span>
-        </a-menu-item>
-        <a-menu-item key="3">
-          <a-icon type="upload" />
-          <span>nav 3</span>
+          <span>Beacon List</span>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
@@ -33,6 +35,7 @@
           minHeight: '280px'
         }"
       >
+        <nuxt-link :to="currentPath + '/busroute'" />
         <nuxt-child />
       </a-layout-content>
     </a-layout>
@@ -44,12 +47,25 @@ export default {
   name: 'AdminPage',
   data () {
     return {
-      collapsed: false
+      collapsed: false,
+      currentPath: '',
+      selectedPath: []
     }
   },
   created () {},
-  mounted () {},
+  mounted () {
+    this.currentPath = this.$route.path
+  },
   methods: {
+    handelMenuClick (item) {
+      console.log(item)
+      console.log(this.$route.path)
+      // const routePath = this.$route.path + item.key
+      // if (routePath !== this.$route.path) {
+      //   console.log(this.$route.path)
+      //   this.$router.push(routePath)
+      // }
+    },
     openNotification (eventName) {
       const placement = 'bottomLeft'
       this.$notification.success({

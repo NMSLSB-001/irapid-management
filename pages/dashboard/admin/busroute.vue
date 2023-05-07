@@ -2,7 +2,12 @@
   <div>
     <div>
       <a-row :gutter="16" type="flex" justify="start">
-        <a-col v-for="(item, index) in bustopList" :key="index" :span="8">
+        <a-col
+          v-for="(item, index) in bustopList"
+          :key="index"
+          v-model="bustopList"
+          :span="8"
+        >
           <a-card hoverable style="width: 300px">
             <img
               slot="cover"
@@ -11,12 +16,20 @@
             >
             <template slot="actions">
               <a-icon key="setting" type="setting" />
-              <a-icon key="edit" type="edit" @click="showUpdateDrawer" />
-              <a-icon key="ellipsis" type="ellipsis" />
+              <a-icon
+                key="edit"
+                type="edit"
+                @click="showUpdateBusRouteDrawer(item)"
+              />
+              <a-icon
+                key="delete"
+                type="delete"
+                @click="showDeleteBusRoute(item)"
+              />
             </template>
             <a-card-meta
               :title="'Bus Route: Line ' + item['routes']"
-              description="This is the description"
+              :description="item['description']"
             >
               <a-avatar
                 slot="avatar"
@@ -28,15 +41,20 @@
       </a-row>
     </div>
     <div>
-      <a-button type="primary" @click="showAddDrawer">
+      <a-button type="primary" @click="showAddBusRouteDrawer">
         <a-icon type="plus" /> New Bus Route
       </a-button>
+      <a-button type="primary" @click="test">
+        <a-icon type="plus" /> test
+      </a-button>
+    </div>
+    <div>
       <a-drawer
-        title="Add a new bus route"
+        :title="formTitle"
         :width="720"
         :visible="visible"
         :body-style="{ paddingBottom: '80px' }"
-        @close="onClose"
+        @close="onDrawerClose"
       >
         <a-form :form="busRouteForm" layout="vertical" hide-required-mark>
           <a-row :gutter="16">
@@ -56,6 +74,7 @@
                   ]"
                   addon-before="Line"
                   placeholder="Please enter bus route name"
+                  :disabled="formItemDisabled"
                 />
               </a-form-item>
             </a-col>
@@ -171,7 +190,7 @@
             zIndex: 1
           }"
         >
-          <a-button :style="{ marginRight: '8px' }" @click="onClose">
+          <a-button :style="{ marginRight: '8px' }" @click="onDrawerClose">
             Cancel
           </a-button>
           <a-button type="primary" @click="handleSubmit">
@@ -193,6 +212,8 @@ export default {
       bustopListCount: 0,
       bustopList: [],
       busRouteForm: this.$form.createForm(this),
+      formTitle: 'Add a new bus route',
+      formItemDisabled: false,
       visible: false,
       formItemLayout: {
         labelCol: {
@@ -221,31 +242,84 @@ export default {
       preserve: true
     })
   },
-  created () {},
+  created () {
+    this.currentPath = this.$route.path
+  },
   mounted () {
-    this.getData()
+    this.init()
   },
   methods: {
-    async getData () {
-      const res = await this.$indexApi.getBustopList()
+    async init () {
+      this.bustopList = await this.getBusRouteData()
+    },
+    async update () {
+      this.bustopList = []
+      this.bustopList = await this.getBusRouteData()
+    },
+    test () {
+      this.bustopList.push({
+        routes: '9',
+        routesType: '9',
+        description: '9'
+      })
+    },
+    async getBusRouteData () {
+      const res = await this.$indexApi.getBusRouteList()
       if (res.body !== null) {
         const items = res.body
-        console.log('items' + JSON.stringify(items))
-        this.bustopListCount = items.Count
-        this.bustopList = items.Items
+        console.log('items' + JSON.stringify(items.Items))
+        return items.Items
       }
     },
-    showUpdateDrawer () {
+    async updateBusRouteData (data) {
+      const res = await this.$indexApi.updateBusRoute(data)
+      console.log(res)
+    },
+    async deleteBusRouteData (routes) {
+      const data = {
+        key: {
+          routes
+        }
+      }
+      const res = await this.$indexApi.deleteBusRoute(data)
+      console.log(res)
+      this.update()
+    },
+    showUpdateBusRouteDrawer (item) {
+      this.formTitle = 'Update a new bus route'
+      this.formItemDisabled = true
       this.visible = true
       this.$nextTick(() => {
         this.busRouteForm.setFieldsValue({
-          routes: '1',
-          routesType: 'linear-line',
-          description: '1'
+          routes: item.routes,
+          routesType: item.routesType,
+          description: item.description
         })
       })
     },
-    showAddDrawer () {
+    showDeleteBusRoute (item) {
+      console.log(item.routes)
+      this.showDeleteConfirm(item)
+    },
+    showDeleteConfirm (item) {
+      this.$confirm({
+        title: 'Are you sure delete this task?',
+        content: 'Some descriptions',
+        okText: 'Yes',
+        okType: 'danger',
+        cancelText: 'No',
+        onOk: () => {
+          this.deleteBusRouteData(item.routes)
+          console.log('OK')
+        },
+        onCancel () {
+          console.log('Cancel')
+        }
+      })
+    },
+    showAddBusRouteDrawer () {
+      this.formTitle = 'Add a new bus route'
+      this.formItemDisabled = false
       this.visible = true
       this.$nextTick(() => {
         this.busRouteForm.setFieldsValue({
@@ -255,14 +329,11 @@ export default {
         })
       })
     },
-    onClose () {
-      this.visible = false
-    },
     remove (k) {
       const { busStopForm } = this
       // can use data-binding to get
       const keys = busStopForm.getFieldValue('keys')
-      // We need at least one passenger
+      // We need at least one bus stop
       if (keys.length === 1) {
         return
       }
@@ -283,17 +354,25 @@ export default {
         keys: nextKeys
       })
     },
+
     //
+    onDrawerClose () {
+      this.visible = false
+      // this.$router.push(this.$router.path)
+    },
     handleSubmit (e) {
       e.preventDefault()
       this.busRouteForm.validateFields((err, values) => {
         if (!err) {
-          const { keys, names } = values
+          // const { keys, names } = values
           console.log('Received values of form: ', values)
-          console.log(
-            'Merged values:',
-            keys.map(key => names[key])
-          )
+          const data = {
+            operation: 'add',
+            item: values
+          }
+          this.updateBusRouteData(data)
+            .then(this.update())
+            .then(this.onDrawerClose())
         }
       })
     },

@@ -22,6 +22,7 @@ export default function ({ $axios, store }, inject) {
 
       config.startTime = new Date().getTime()
       config.headers['Content-Type'] = 'application/json'
+      // config.headers['Access-Control-Allow-Origin'] = '*'
       /* 如果你需要token */
       // const token = store.state.token || ''
       // if (token) {
