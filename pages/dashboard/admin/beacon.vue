@@ -1,28 +1,33 @@
 <template>
-  <a-row gutter="{ xs: 8, sm: 16, md: 24, lg: 32 }" :type="flex">
-    <a-col flex="1">
-      <a-card title="Default size card" style="width: 300px">
-        <a slot="extra" href="#">more</a>
-        <p>card content</p>
-        <p>card content</p>
-        <p>card content</p>
-      </a-card>
-    </a-col>
-    <a-col flex="1">
-      <a-card title="Default size card" style="width: 300px">
-        <a slot="extra" href="#">more</a>
-        <p>card content</p>
-        <p>card content</p>
-        <p>card content</p>
-      </a-card>
-    </a-col>
-    <a-col flex="1">
-      <a-card title="Default size card" style="width: 300px">
-        <a slot="extra" href="#">more</a>
-        <p>card content</p>
-        <p>card content</p>
-        <p>card content</p>
-      </a-card>
-    </a-col>
-  </a-row>
+  <div>
+    <a-row :gutter="16" type="flex" justify="start">
+      <a-col
+        v-for="(item, index) in bustopList"
+        :key="index"
+        v-model="bustopList"
+        :span="8"
+      />
+    </a-row>
+  </div>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      bustopList: []
+    }
+  },
+  created () {
+    this.currentPath = this.$route.path
+  },
+  mounted () {
+
+  },
+  methods: {}
+}
+</script>
+
+<style lang="less" scoped>
+
+</style>

@@ -35,7 +35,7 @@
           minHeight: '280px'
         }"
       >
-        <nuxt-link :to="currentPath + '/busroute'" />
+        <nuxt-link :to="targetPath" />
         <nuxt-child />
       </a-layout-content>
     </a-layout>
@@ -48,18 +48,28 @@ export default {
   data () {
     return {
       collapsed: false,
-      currentPath: '',
+      currentPath: '/dashboard/admin',
+      targetPath: '',
       selectedPath: []
     }
   },
-  created () {},
+  created () {
+    this.selectedPath.push(this.$route.path.substr(this.currentPath.length))
+  },
   mounted () {
-    this.currentPath = this.$route.path
+    // this.currentPath = this.$route.path
   },
   methods: {
     handelMenuClick (item) {
       console.log(item)
       console.log(this.$route.path)
+      const path = this.currentPath + item.key
+      if (path !== this.$route.path) {
+        this.selectedPath = []
+        this.selectedPath.push(item.key)
+        this.targetPath = path
+        this.$router.push(this.targetPath)
+      }
       // const routePath = this.$route.path + item.key
       // if (routePath !== this.$route.path) {
       //   console.log(this.$route.path)
@@ -96,5 +106,11 @@ export default {
   height: 32px;
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
+}
+
+.ant-layout-sider {
+  height: 100vh;
+  // background-color: #fff;
+  overflow: auto;
 }
 </style>

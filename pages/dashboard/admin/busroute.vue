@@ -8,14 +8,19 @@
           v-model="bustopList"
           :span="8"
         >
-          <a-card hoverable style="width: 300px">
+          <a-card hoverable style="width: 300px" :loading="loading">
             <img
               slot="cover"
               alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+              :src="coverSrc"
+              :loading="loading"
             >
             <template slot="actions">
-              <a-icon key="setting" type="setting" />
+              <a-icon
+                key="view"
+                type="eye"
+                @click="handleClose()"
+              />
               <a-icon
                 key="edit"
                 type="edit"
@@ -31,14 +36,28 @@
               :title="'Bus Route: Line ' + item['routes']"
               :description="item['description']"
             >
-              <a-avatar
-                slot="avatar"
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              />
+              <a-avatar slot="avatar" :src="avatarSrc" />
             </a-card-meta>
           </a-card>
         </a-col>
       </a-row>
+    </div>
+    <div>
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :before-close="handleClose"
+      >
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="dialogVisible = false"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
     <div>
       <a-button type="primary" @click="showAddBusRouteDrawer">
@@ -52,7 +71,7 @@
       <a-drawer
         :title="formTitle"
         :width="720"
-        :visible="visible"
+        :visible="drawerVisible"
         :body-style="{ paddingBottom: '80px' }"
         @close="onDrawerClose"
       >
@@ -210,11 +229,21 @@ export default {
     return {
       collapsed: false,
       bustopListCount: 0,
-      bustopList: [],
+      bustopList: [
+        {
+          routes: '',
+          routesType: '',
+          description: ''
+        }
+      ],
+      coverSrc: require('@/static/images/iRapid.png'),
+      avatarSrc: require('@/static/images/bus.svg'),
+      loading: true,
       busRouteForm: this.$form.createForm(this),
       formTitle: 'Add a new bus route',
       formItemDisabled: false,
-      visible: false,
+      dialogVisible: false,
+      drawerVisible: false,
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -251,10 +280,15 @@ export default {
   methods: {
     async init () {
       this.bustopList = await this.getBusRouteData()
+      this.sleep(500)
+      this.loading = false
     },
     async update () {
       this.bustopList = []
       this.bustopList = await this.getBusRouteData()
+    },
+    sleep (ms) {
+      return new Promise(resolve => setTimeout(resolve, ms))
     },
     test () {
       this.bustopList.push({
@@ -285,10 +319,19 @@ export default {
       console.log(res)
       this.update()
     },
+    //
+    showViewBusRouteModal (item) {},
+    handleClose (done) {
+      this.$eleconfirm('确认关闭？')
+        .then((_) => {
+          done()
+        })
+        .catch((_) => {})
+    },
     showUpdateBusRouteDrawer (item) {
       this.formTitle = 'Update a new bus route'
       this.formItemDisabled = true
-      this.visible = true
+      this.drawerVisible = true
       this.$nextTick(() => {
         this.busRouteForm.setFieldsValue({
           routes: item.routes,
@@ -320,7 +363,7 @@ export default {
     showAddBusRouteDrawer () {
       this.formTitle = 'Add a new bus route'
       this.formItemDisabled = false
-      this.visible = true
+      this.drawerVisible = true
       this.$nextTick(() => {
         this.busRouteForm.setFieldsValue({
           routes: '',
@@ -357,7 +400,7 @@ export default {
 
     //
     onDrawerClose () {
-      this.visible = false
+      this.drawerVisible = false
       // this.$router.push(this.$router.path)
     },
     handleSubmit (e) {
