@@ -1,116 +1,104 @@
 <template>
-  <a-layout id="components-layout-demo-custom-trigger">
-    <a-layout-sider v-model="collapsed" :trigger="null" collapsible>
-      <div class="logo" />
-      <a-menu
-        theme="dark"
-        mode="inline"
-        :default-selected-keys="['1']"
-        :selected-keys="selectedPath"
-        @click="handelMenuClick"
-      >
-        <a-menu-item key="/busroute">
-          <a-icon type="car" />
-          <span>Bus Routes</span>
-        </a-menu-item>
-        <a-menu-item key="/beacon">
-          <a-icon type="video-camera" />
-          <span>Beacon List</span>
-        </a-menu-item>
-      </a-menu>
-    </a-layout-sider>
-    <a-layout>
-      <a-layout-header style="background: #fff; padding: 0">
-        <a-icon
-          class="trigger"
-          :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="() => (collapsed = !collapsed)"
-        />
-      </a-layout-header>
-      <a-layout-content
-        :style="{
-          margin: '24px 16px',
-          padding: '24px',
-          background: '#fff',
-          minHeight: '280px'
-        }"
-      >
-        <nuxt-link :to="targetPath" />
-        <nuxt-child />
-      </a-layout-content>
-    </a-layout>
+  <a-layout id="components-layout-demo-top" class="layout">
+    <a-layout-header>
+      <div class="logo">
+        <img
+          slot="cover"
+          alt="example"
+          src="@/static/images/iRapid.png"
+          style="width: 120px; height: 60px"
+        >
+        <span style="color: white">IRapid Admin Management System</span>
+      </div>
+    </a-layout-header>
+    <a-layout-content>
+      <div class="layout-content">
+        <div class="layout-content-header" />
+        <div class="layout-conten-main">
+          <client-only>
+            <nuxt-child />
+          </client-only>
+        </div>
+      </div>
+    </a-layout-content>
+    <a-layout-footer style="text-align: center">
+      @IRapid 2023
+    </a-layout-footer>
   </a-layout>
 </template>
 
 <script>
 export default {
-  name: 'AdminPage',
+  name: 'DashboardPage',
   data () {
     return {
-      collapsed: false,
-      currentPath: '/admin',
-      targetPath: '',
-      selectedPath: []
+      selectionDefaultValue: 'all',
+      inputVal: '',
+      songListData: [],
+      dataList: []
     }
   },
-  created () {
-  },
-  mounted () {
-    this.selectedPath.push(this.$route.path.substr(this.currentPath.length))
-    // this.currentPath = this.$route.path
-  },
-  methods: {
-    handelMenuClick (item) {
-      console.log(item)
-      console.log(this.$route.path)
-      const path = this.currentPath + item.key
-      if (path !== this.$route.path) {
-        this.selectedPath = []
-        this.selectedPath.push(item.key)
-        this.targetPath = path
-        this.$router.push(this.targetPath)
+  computed: {
+    searchList: function () {
+      if (!this.inputVal) {
+        return this.dataList
       }
-      // const routePath = this.$route.path + item.key
-      // if (routePath !== this.$route.path) {
-      //   console.log(this.$route.path)
-      //   this.$router.push(routePath)
-      // }
-    },
-    openNotification (eventName) {
-      const placement = 'bottomLeft'
-      this.$notification.success({
-        message: ` ${eventName}`,
-        description: 'Add successful',
-        placement,
-        duration: 2
+      return this.dataList.filter((v) => {
+        return v.songName.includes(this.inputVal)
       })
     }
-  }
+  },
+  created () {},
+  mounted () {
+    console.log('nmsl' + process.env.API_URL)
+  },
+  beforeMount () {},
+  methods: {}
 }
 </script>
 
 <style lang="less" scoped>
-#components-layout-demo-custom-trigger .trigger {
-  font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
-  cursor: pointer;
-  transition: color 0.3s;
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
 }
 
-#components-layout-demo-custom-trigger .trigger:hover {
-  color: #1890ff;
+.ant-layout {
+  display: flex;
+  min-height: 100%;
 }
 
-#components-layout-demo-custom-trigger .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
+.ant-layout-header {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(135, 225, 195);
+  box-shadow: 0 0 10px gainsboro;
+  padding: 0 10%;
 }
 
-.ant-layout-sider {
-  height: calc(100vh - 150px);
-  // background-color: #fff;
+.logo {
+  max-height: 90px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  > img {
+    margin: 10px;
+  }
+  > span {
+    font-weight: normal;
+    font-family: 'Proxima Soft';
+    font-size: 21px;
+  }
+}
+
+.layout-content {
+  height: calc(100vh - 80px - 69px);
+  padding: 0 0% !important;
+  // background: #fff;
   overflow: auto;
 }
 </style>
