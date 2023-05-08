@@ -1,4 +1,4 @@
-# song-list
+# irapid-management
 
 ## Build Setup
 
@@ -67,3 +67,46 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+
+## Developer Specification
+
+### Naming conventions
+
+- file naming
+     - all lowercase
+     - as short as possible
+     - Try to avoid using `_`, if you must split, use `_`
+- variable naming
+     - hump
+- constant naming
+     - hump
+
+### Development Process
+
+[Fork & Pull Request process](https://aaronflower.github.io/essays/github-fork-pull-workflow.html)
+
+- checkout develop -> feature
+- coding
+- pull request
+- review
+- merge
+
+### Push instructions
+
+- feature:  Add new feature
+- fix:      fix bug
+- hotfix:   Emergency fix bug
+- docs:     Only modified documents, such as README, CHANGELOG, CONTRIBUTE, etc.
+- style:    Only spaces, format indentation, commas, etc. are modified without changing the code logic
+- refactor: Code refactoring, consistent external behavior (you better not make new bugs)
+- perf:     Optimization related, such as improving performance and experience
+- test:     Test cases, including unit tests, integration tests, etc.
+- chore:    Change the build process, or add dependent libraries, tools, etc.
+- revert:   rollback to previous version
+
+### Toolkits
+
+- [postman](https://www.postman.com/)
+    - login to use
+
