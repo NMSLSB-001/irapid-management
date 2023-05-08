@@ -16,11 +16,7 @@
               :loading="loading"
             >
             <template slot="actions">
-              <a-icon
-                key="view"
-                type="eye"
-                @click="handleClose()"
-              />
+              <a-icon key="view" type="eye" @click="handleClose()" />
               <a-icon
                 key="edit"
                 type="edit"
@@ -343,6 +339,12 @@ export default {
           description: item.description
         })
       })
+      this.$nextTick(() => {
+        this.busStopForm.setFieldsValue({
+          keys: [0, 1, 2],
+          names: ['1', '2', '3']
+        })
+      })
     },
     showDeleteBusRoute (item) {
       console.log(item.routes)
@@ -411,15 +413,15 @@ export default {
     },
     handleSubmit (e) {
       e.preventDefault()
-      this.busRouteForm.validateFields((err, values) => {
+      this.busStopForm.validateFields((err, values) => {
         if (!err) {
           // const { keys, names } = values
           console.log('Received values of form: ', values)
-          const data = {
-            operation: this.formActivity,
-            item: values
-          }
-          this.updateBusRouteData(data)
+          // const data = {
+          //   operation: this.formActivity,
+          //   item: values
+          // }
+          // this.updateBusRouteData(data)
         }
       })
     },
