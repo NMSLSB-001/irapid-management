@@ -181,7 +181,7 @@
                   style="width: 60%; margin-right: 8px"
                 />
                 <a-icon
-                  v-if="busStopForm.getFieldValue('keys').length > 1"
+                  v-show="busStopForm.getFieldValue('keys').length > 1"
                   class="dynamic-delete-button"
                   type="minus-circle-o"
                   :disabled="busStopForm.getFieldValue('keys').length === 1"
