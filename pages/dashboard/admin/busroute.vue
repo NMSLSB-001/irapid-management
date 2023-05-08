@@ -224,7 +224,7 @@
 <script>
 let id = 0
 export default {
-  name: 'BustopPage',
+  name: 'BusRoutePage',
   data () {
     return {
       collapsed: false,
@@ -242,6 +242,8 @@ export default {
       busRouteForm: this.$form.createForm(this),
       formTitle: 'Add a new bus route',
       formItemDisabled: false,
+      formItemButton: 'Submit',
+      formActivity: 'add',
       dialogVisible: false,
       drawerVisible: false,
       formItemLayout: {
@@ -298,7 +300,7 @@ export default {
       })
     },
     async getBusRouteData () {
-      const res = await this.$indexApi.getBusRouteList()
+      const res = await this.$indexApi.getBusRouteData()
       if (res.body !== null) {
         const items = res.body
         console.log('items' + JSON.stringify(items.Items))
@@ -308,6 +310,7 @@ export default {
     async updateBusRouteData (data) {
       const res = await this.$indexApi.updateBusRoute(data)
       console.log(res)
+      this.onDrawerClose()
     },
     async deleteBusRouteData (routes) {
       const data = {
@@ -331,6 +334,7 @@ export default {
     showUpdateBusRouteDrawer (item) {
       this.formTitle = 'Update a new bus route'
       this.formItemDisabled = true
+      this.formActivity = 'update'
       this.drawerVisible = true
       this.$nextTick(() => {
         this.busRouteForm.setFieldsValue({
@@ -363,6 +367,7 @@ export default {
     showAddBusRouteDrawer () {
       this.formTitle = 'Add a new bus route'
       this.formItemDisabled = false
+      this.formActivity = 'add'
       this.drawerVisible = true
       this.$nextTick(() => {
         this.busRouteForm.setFieldsValue({
@@ -400,6 +405,7 @@ export default {
 
     //
     onDrawerClose () {
+      this.update()
       this.drawerVisible = false
       // this.$router.push(this.$router.path)
     },
@@ -410,12 +416,10 @@ export default {
           // const { keys, names } = values
           console.log('Received values of form: ', values)
           const data = {
-            operation: 'add',
+            operation: this.formActivity,
             item: values
           }
           this.updateBusRouteData(data)
-            .then(this.update())
-            .then(this.onDrawerClose())
         }
       })
     },

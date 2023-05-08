@@ -109,7 +109,7 @@ export default {
 }
 
 .ant-layout-sider {
-  height: 100vh;
+  height: calc(100vh - 150px);
   // background-color: #fff;
   overflow: auto;
 }

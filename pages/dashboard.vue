@@ -5,7 +5,7 @@
         <img
           slot="cover"
           alt="example"
-          src="../static/images/iRapid.png"
+          src="@/static/images/iRapid.png"
           style="width: 120px; height: 60px"
         >
         <span style="color: white">IRapid Admin Management System</span>
