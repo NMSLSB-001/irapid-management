@@ -1,6 +1,9 @@
 import env from './env'
 
 export default {
+  // Target: https://go.nuxtjs.dev/config-target
+  target: 'static',
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'IRapid',
@@ -44,7 +47,16 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    babel: {
+      plugins: [
+        [
+          'component',
+          { libraryName: 'element-ui', styleLibraryName: 'theme-chalk' }
+        ]
+      ]
+    }
+  },
   env: {
     NODE_ENV: env[process.env.NODE_ENV].NODE_ENV,
     API_URL: env[process.env.NODE_ENV].API_URL
