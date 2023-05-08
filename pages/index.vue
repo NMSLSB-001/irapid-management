@@ -15,7 +15,7 @@
       <div class="layout-content">
         <div class="layout-content-header" />
         <div class="layout-conten-main">
-          <nuxt-child />
+          <nuxt-child keep-alive to="/song" />
         </div>
       </div>
     </a-layout-content>
