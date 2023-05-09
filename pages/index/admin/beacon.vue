@@ -16,9 +16,7 @@
                 marginbottom: 16px;
                 fontweight: 500;
               "
-            >
-              Group title
-            </p>
+            />
             <a-row
               v-for="(subItem, subIndex) in beaconData[item]"
               :key="subIndex"
@@ -26,7 +24,10 @@
               :gutter="16"
             >
               <a-card :title="'Beacon Address: ' + subItem['bleAddress']">
-                <a slot="extra" href="#">More</a>
+                <a slot="extra"><a-icon
+                  type="delete"
+                  @click="deleteBeaconCard(subItem['bleAddress'])"
+                /></a>
                 <p>{{ 'Bus Carplate: ' + subItem['busCarplate'] }}</p>
                 <p>{{ 'Bus Status: ' + subItem['busStatus'] }}</p>
               </a-card>
@@ -40,6 +41,46 @@
       <a-button type="primary" @click="showAddBeaconDialog">
         <a-icon type="plus" /> New Beacon
       </a-button>
+      <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
+        <el-form :model="beaconForm">
+          <el-form-item label="Beacon UUID" :label-width="formLabelWidth">
+            <el-input v-model="beaconForm.bleAddress" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="Bus Carplate" :label-width="formLabelWidth">
+            <el-input v-model="beaconForm.busCarplate" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="Bus Status" :label-width="formLabelWidth">
+            <el-select
+              v-model="beaconForm.busStatus"
+              placeholder="Please select current status"
+            >
+              <el-option label="Normal" value="normal" />
+              <el-option label="Out of Service" value="outOfService" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Bus Route" :label-width="formLabelWidth">
+            <el-select
+              v-model="beaconForm.routes"
+              placeholder="Please select current status"
+            >
+              <el-option
+                v-for="item in busRouteList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">
+            Cancel
+          </el-button>
+          <el-button type="primary" @click="submitDialogForm()">
+            Confirm
+          </el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -51,7 +92,16 @@ export default {
     return {
       busRouteList: [],
       beaconData: [],
-      dialogVisible: false
+      dialogFormVisible: false,
+      dialogTitle: 'Add a new beacon',
+      dialogActivity: 'add',
+      beaconForm: {
+        bleAddress: '',
+        busCarplate: '',
+        busStatus: '',
+        routes: ''
+      },
+      formLabelWidth: '120px'
     }
   },
   created () {
@@ -95,6 +145,7 @@ export default {
     async updateBeacon (data) {
       const res = await this.$indexApi.updateBeacon(data)
       console.log(res)
+      this.update()
     },
     async deleteBeacon (bleAddress) {
       const data = {
@@ -106,8 +157,29 @@ export default {
       console.log(res)
       this.update()
     },
+    deleteBeaconCard (item) {
+      console.log(item)
+      this.deleteBeacon(item)
+    },
     showAddBeaconDialog () {
-      this.dialogVisible = true
+      this.dialogTitle = 'Add a new beacon'
+      this.dialogActivity = 'add'
+      this.dialogFormVisible = true
+    },
+    submitDialogForm () {
+      console.log(this.beaconForm)
+      const data = {
+        operation: this.dialogActivity,
+        item: this.beaconForm
+      }
+      this.updateBeacon(data)
+      this.beaconForm = {
+        bleAddress: '',
+        busCarplate: '',
+        busStatus: '',
+        routes: ''
+      }
+      this.dialogFormVisible = false
     }
   }
 }

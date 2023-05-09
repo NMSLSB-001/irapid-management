@@ -63,9 +63,6 @@
       <a-button type="primary" @click="showAddBusRouteDrawer">
         <a-icon type="plus" /> New Bus Route
       </a-button>
-      <a-button type="primary" @click="test">
-        <a-icon type="plus" /> test
-      </a-button>
     </div>
     <div>
       <a-drawer
