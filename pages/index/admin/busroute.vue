@@ -16,11 +16,7 @@
               :loading="loading"
             >
             <template slot="actions">
-              <a-icon
-                key="view"
-                type="eye"
-                @click="handleClose()"
-              />
+              <a-icon key="view" type="eye" @click="handleClose()" />
               <a-icon
                 key="edit"
                 type="edit"
@@ -49,13 +45,13 @@
         width="30%"
         :before-close="handleClose"
       >
-        <span>这是一段信息</span>
+        <span>Notice</span>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="dialogVisible = false">Cancel</el-button>
           <el-button
             type="primary"
             @click="dialogVisible = false"
-          >确 定</el-button>
+          >Confirm</el-button>
         </span>
       </el-dialog>
     </div>
@@ -322,7 +318,7 @@ export default {
     //
     showViewBusRouteModal (item) {},
     handleClose (done) {
-      this.$eleconfirm('确认关闭？')
+      this.$eleconfirm('Confirm to close')
         .then((_) => {
           done()
         })
@@ -408,10 +404,18 @@ export default {
     },
     handleSubmit (e) {
       e.preventDefault()
+      let busStop
+      this.busStopForm.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values)
+          console.log(values)
+          busStop = values
+        }
+      })
       this.busRouteForm.validateFields((err, values) => {
         if (!err) {
           // const { keys, names } = values
-          console.log('Received values of form: ', values)
+          values.busStop = busStop
           const data = {
             operation: this.formActivity,
             item: values
